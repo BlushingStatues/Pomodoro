@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pomodoro Timer</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+      
+<svg width="300" height="150" viewBox="0 0 300 150" xmlns="http://www.w3.org/2000/svg">
+  
+  <defs>
+    <path id="arcPath" d="M10,90 A140,70 0 0,1 290,90" fill="none"/>
+  </defs>
+
+  <g transform="translate(0, 50)">
+
+    <text text-anchor="middle" font-family="YesevaOne" font-size="28" fill="rgb(239, 1, 0)">
+      <textPath href="#arcPath" startOffset="50%">
+        Pomodoro
+      </textPath>
+      
+    </text>
+  </g>
+</svg>
+
+<button id="info">
+  <img src="./assets/info.png" alt="Info">
+</button>
+
+  <!-- <h1 class="title">
+  Pomodoro 
+  <button id="info">
+    <img id="info" src="./assets/info.png" alt="Info">
+  </button>
+</h1> -->
+
+         <img id="bigTom" src="./assets/Tomato_Big.png">
+
+         <p class="timer" id="timer">25:00</p>
+         
+        <div class="button-row">
+          
+            <button id="breakBtn">
+              <img src="./assets/breaktime.png" alt="Break" />
+            </button>
+
+            <button id="start">start</button>
+
+            <button id="resetBtn">
+             <img src="./assets/reset.png" alt="Reset" />
+           </button>
+
+    </div>
+
+<div id="segment" class="tomato-segment" >
+
+  <img src="./assets/tomato_grey.png" class="tomato" />
+  <img src="./assets/tomato_grey.png" class="tomato" />
+  <img src="./assets/tomato_grey.png" class="tomato" />
+  <img src="./assets/tomato_grey.png" class="tomato" />
+</div>
+  <script src ="app.js"></script> 
+
+
+
+  <!-- Timer chime audio -->
+  <audio id="chime-sound" src="./assets/bellchime_short.wav" preload="auto"></audio>
+
+</body>
+</html>
