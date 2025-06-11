@@ -1,2 +1,2 @@
 # Pomodoro
-timer app 
+githubbed timer app 
