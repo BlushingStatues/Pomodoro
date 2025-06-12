@@ -4,11 +4,12 @@ const reset = document.getElementById("reset");
 const timer = document.getElementById("timer");
 const bigTom = document.getElementById('bigTom');
 const startButton = document.getElementById('start');
+const resetBtn = document.getElementById("reset");
+const breakBtn = document.getElementById("break");
 
 // if you 25 x 60, you get 1500, the amount of seconds in 25mins. 300 for 5 mins
-let timeLeft25 = 3;
-let timeLeft5 = 300;
-let timeLeft10 = 600;
+let timeLeft25 = 5;
+let timeLeft5 = 3;
 let completedPomodoros = 0;
 let interval;
 let isRunning = false;
@@ -80,9 +81,13 @@ const startTimer = () => {
        timeLeft25--;
        updateTimer();
        
+
+       //25 min timer to 5 min break
+       // NEED to check for isBreak = false, to begin 25 min timer. 
+
        if(timeLeft25 === 0){
         clearInterval(interval);
-
+        isBreak = true;
             // WIGGLE Add the wiggle class & match animation duration
             bigTom.classList.add('wiggle');
             setTimeout(() => {
@@ -91,11 +96,14 @@ const startTimer = () => {
             
             handlePomodoroComplete();
             playChime();
+            isRunning = false;
             
-            // Reset the timer (if you want auto-looping)
-          isRunning = false;
+          // Reset the timer (if you want auto-looping)
+          // start.innerHTML = `${"start"}`; 
+          //timeLeft25 = 3; 
+
           start.innerHTML = `${"start"}`; 
-          timeLeft25 = 3;
+           timeLeft25 = 3;
         updateTimer();
        
        }
