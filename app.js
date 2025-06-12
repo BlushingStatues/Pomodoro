@@ -29,19 +29,31 @@ function updateTomatoSegment() {
   });
 }
 
-const updateTimer = () => {
+function runTimer(durationInSeconds, onComplete, updateDisplay) {
+  let timeLeft = durationInSeconds;
+  isRunning = true;
+  start.innerHTML = "pause";
 
-    // dividing time left by 60 to get the minutes, but Math.floor rounds it up to a whole number.
-    const minutes = Math.floor(timeLeft25 / 60);
-    // the % is called the remainder operator and it tells you whats left after dividing. 
-    // In this case, it's telling me how many seconds are left outside of every whole minute used.
-    // Handy to know for time based features in the future.
-    const seconds = timeLeft25 % 60; 
+  updateDisplay(timeLeft); // Show initial value
 
-    timer.innerHTML = `
-    ${minutes.toString().padStart(2,"0")}:${seconds.toString().padStart(2,"0")}`;
+  interval = setInterval(() => {
+    timeLeft--;
+    updateDisplay(timeLeft);
 
-};
+    if (timeLeft <= 0) {
+      clearInterval(interval);
+      isRunning = false;
+      start.innerHTML = "start";
+      onComplete();
+    }
+  }, 1000);
+}
+
+function updateDisplay(timeLeft) {
+  const minutes = Math.floor(timeLeft / 60);
+  const seconds = timeLeft % 60;
+  timer.innerHTML = `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+}
 
 // Call this when a 25-minute timer finishes:
 function handlePomodoroComplete() {
@@ -69,45 +81,28 @@ const checkRunning = () => {
     }
 };
 
-const startTimer = () => {
+function startTimer() {
 
-    isRunning = true;
+  if (isBreak) {
+    runTimer(timeLeft5, () => {
+      playChime();
+      isBreak = false;
+      timeLeft25 = 5; // Reset for next Pomodoro
+      updateDisplay(timeLeft25);
+    }, updateDisplay);
 
-    start.innerHTML = `${"pause"}`; 
-    
-    // this function will proc every 1 second, thats 1000 miliseconds.
-    //  As soon as you hit the Start button, it will decrease the time until it hits 0.
-    interval = setInterval(() => {
-       timeLeft25--;
-       updateTimer();
-       
 
-       //25 min timer to 5 min break
-       // NEED to check for isBreak = false, to begin 25 min timer. 
-
-       if(timeLeft25 === 0){
-        clearInterval(interval);
-        isBreak = true;
-            // WIGGLE Add the wiggle class & match animation duration
-            bigTom.classList.add('wiggle');
-            setTimeout(() => {
-            bigTom.classList.remove('wiggle');
-            }, 800);
-            
-            handlePomodoroComplete();
-            playChime();
-            isRunning = false;
-            
-          // Reset the timer (if you want auto-looping)
-          // start.innerHTML = `${"start"}`; 
-          //timeLeft25 = 3; 
-
-          start.innerHTML = `${"start"}`; 
-           timeLeft25 = 3;
-        updateTimer();
-       
-       }
-    }, 1000);
+  } else {
+    runTimer(timeLeft25, () => {
+      playChime();
+      bigTom.classList.add('wiggle');
+      setTimeout(() => bigTom.classList.remove('wiggle'), 800);
+      handlePomodoroComplete();
+      isBreak = true;
+      timeLeft5 = 3; // reset break time
+      updateDisplay(timeLeft5);
+    }, updateDisplay);
+  }
 }
 
 
