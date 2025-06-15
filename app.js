@@ -1,19 +1,21 @@
 const start = document.getElementById("start");
 const stop = document.getElementById("stop");
-const reset = document.getElementById("reset");
 const timer = document.getElementById("timer");
 const bigTom = document.getElementById('bigTom');
 const startButton = document.getElementById('start');
-const resetBtn = document.getElementById("reset");
-const breakBtn = document.getElementById("break");
+const resetBtn = document.getElementById("resetBtn");
+const breakBtn = document.getElementById("breakBtn");
+const infoBtn = document.getElementById("infoBtn")
 
 // if you 25 x 60, you get 1500, the amount of seconds in 25mins. 300 for 5 mins
 let timeLeft25 = 5;
 let timeLeft5 = 3;
+let timeLeft = 30;
 let completedPomodoros = 0;
 let interval;
 let isRunning = false;
 let isBreak = false;
+let initialSetup = false;
 
 
 function updateTomatoSegment() {
@@ -29,8 +31,8 @@ function updateTomatoSegment() {
   });
 }
 
-function runTimer(durationInSeconds, onComplete, updateDisplay) {
-  let timeLeft = durationInSeconds;
+function runTimer(onComplete, updateDisplay) {
+
   isRunning = true;
   start.innerHTML = "pause";
 
@@ -72,6 +74,10 @@ function playChime() {
 
 // new function - bool for is the timer counting. starts on false. on start, turn to true (startTimer)
 const checkRunning = () => {
+  if (!initialSetup) {
+    timeLeft = timeLeft25;
+    initialSetup = true;
+  }
 
     if (isRunning){
         stopTimer();
@@ -82,18 +88,43 @@ const checkRunning = () => {
 };
 
 function startTimer() {
-
+console.log("startTimer")
   if (isBreak) {
-    runTimer(timeLeft5, () => {
+    runTimer( () => { //onComplete then does all the following as 1 function
       playChime();
+      start.classList.add('pause');
       isBreak = false;
-      timeLeft25 = 5; // Reset for next Pomodoro
-      updateDisplay(timeLeft25);
+      timeLeft = timeLeft25 // Reset for next Pomodoro
+      updateDisplay(timeLeft);
     }, updateDisplay);
 
 
   } else {
-    runTimer(timeLeft25, () => {
+    runTimer( () => {
+      playChime();
+      bigTom.classList.add('wiggle');
+      setTimeout(() => bigTom.classList.remove('wiggle'), 800);
+      handlePomodoroComplete();
+      isBreak = true;
+      timeLeft = timeLeft5 // reset break time
+      updateDisplay(timeLeft);
+    }, updateDisplay);
+  }
+}
+
+
+// stop button stops at whatever interval 
+const stopTimer = () => {
+    console.log("stopTimer")
+    isRunning = false;
+    start.innerHTML = `${"start"}`; 
+    clearInterval(interval);
+
+}
+// reset stops time as above, but resets to 25m. 
+const resetTimer = () => {
+  {
+    runTimer( () => {
       playChime();
       bigTom.classList.add('wiggle');
       setTimeout(() => bigTom.classList.remove('wiggle'), 800);
@@ -103,30 +134,31 @@ function startTimer() {
       updateDisplay(timeLeft5);
     }, updateDisplay);
   }
+  
 }
 
-
-// stop button stops at whatever interval 
-const stopTimer = () => {
-    
-    isRunning = false;
-    start.innerHTML = `${"start"}`; 
-    clearInterval(interval);
-
+function breakTimer () {
+console.log("breakTimer")
+    runTimer( () => {
+      playChime();
+      start.classList.add('pause');
+      isBreak = false;
+      timeLeft25 = 5; // Reset for next Pomodoro
+      updateDisplay(timeLeft25);
+    }, updateDisplay) 
 }
-// reset stops time as above, but resets to 25m. 
-const resetTimer = () => {
 
-    isRunning = false;
-    start.innerHTML = `${"start"}`; 
-    clearInterval(interval)
-    timeLeft25 = 3;
-    updateTimer();
-}
 
 function resetSegment() {
   completedPomodoros = 0;
   updateTomatoSegment();
+
+// at 4 poms, commence long-break screen. its a bool.
+//bg colour to blue + white, coffee image, orange border colour. 
+ 
+  //if (completedPomodoros === 4,) {
+ // }
+
 }
 
 // this takes 2 arguments, the event and what function that procs when the event happens
@@ -143,4 +175,5 @@ startButton.addEventListener('click', () => {
 
 resetBtn.addEventListener("click", resetTimer);
 breakBtn.addEventListener("click", breakTimer);
+infoBtn.addEventListener("click", infoPanel)
 
