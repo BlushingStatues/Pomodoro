@@ -39,6 +39,7 @@ body {
 
 .container {
   position: sticky;
+  min-width: fit-content;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -84,8 +85,6 @@ button {
 button:hover {
   transform: translateY(-10px);
 }
-
-
 
 #bigTom {
   display: block;
@@ -144,9 +143,13 @@ button:hover {
 
 /* Position the content inside the overlay */
 .overlay-content {
-  position: relative;
+  background-color: rgb(255, 252, 202);
+  background-clip: padding-box;
+  border-radius: 20px;
+  padding: 2em;
+  position: sticky;
   top: 25%; /* 25% from the top */
-  width: 100%; /* 100% width */
+  width: fit-content; /* 100% width */
   text-align: center; /* Centered text/links */
   margin-top: 30px; /* 30px top margin to avoid conflict with the close button on smaller screens */
 }

@@ -122,18 +122,20 @@ const stopTimer = () => {
 
 }
 // reset stops time as above, but resets to 25m. 
+// 
 const resetTimer = () => {
   {
-    runTimer( () => {
-      playChime();
-      bigTom.classList.add('wiggle');
-      setTimeout(() => bigTom.classList.remove('wiggle'), 800);
-      handlePomodoroComplete();
-      isBreak = true;
-      timeLeft5 = 3; // reset break time
-      updateDisplay(timeLeft5);
-    }, updateDisplay);
-  }
+     console.log("resetTimer")
+    clearInterval(interval);
+  
+    if (isBreak) {
+      timeLeft = timeLeft5;
+    }
+    else{
+      timeLeft = timeLeft25;
+    }
+    startTimer();
+   }
   
 }
 
@@ -143,8 +145,8 @@ console.log("breakTimer")
       playChime();
       start.classList.add('pause');
       isBreak = false;
-      timeLeft25 = 5; // Reset for next Pomodoro
-      updateDisplay(timeLeft25);
+      timeLeft = timeLeft25; // Reset for next Pomodoro
+      updateDisplay(timeLeft);
     }, updateDisplay) 
 }
 
@@ -152,6 +154,9 @@ console.log("breakTimer")
 function resetSegment() {
   completedPomodoros = 0;
   updateTomatoSegment();
+
+
+
 
 // at 4 poms, commence long-break screen. its a bool.
 //bg colour to blue + white, coffee image, orange border colour. 
@@ -175,5 +180,15 @@ startButton.addEventListener('click', () => {
 
 resetBtn.addEventListener("click", resetTimer);
 breakBtn.addEventListener("click", breakTimer);
-infoBtn.addEventListener("click", infoPanel)
+infoBtn.addEventListener("click", openNav)
+/* Open when someone clicks on the span element */
+function openNav() {
+  document.getElementById("myNav").style.width = "100%";
+  document.getElementById("infoBtn").style.display = "none";
+}
 
+/* Close when someone clicks on the "x" symbol inside the overlay */
+function closeNav() {
+  document.getElementById("myNav").style.width = "0%";
+   document.getElementById("infoBtn").style.display = "block";
+}
