@@ -81,32 +81,44 @@ const checkRunning = () => {
 
     if (isRunning){
         stopTimer();
+        console.log("isRunning = false");
     }
     else {
         startTimer();
+         console.log("isRunning = true");
     }
 };
 
+// this function checks if the timer is running, stops an existing interval if there is one,
+//  starts a new one safely
+
+function safeRunTimer(onComplete, updateDisplay) {
+  if (interval) {
+    clearInterval(interval); // Clear any existing one
+  }
+  runTimer(onComplete, updateDisplay);
+}
+
 function startTimer() {
-console.log("startTimer")
+  console.log("startTimer");
+
   if (isBreak) {
-    runTimer( () => { //onComplete then does all the following as 1 function
+    safeRunTimer(() => {
       playChime();
       start.classList.add('pause');
       isBreak = false;
-      timeLeft = timeLeft25 // Reset for next Pomodoro
+      timeLeft = timeLeft25;
       updateDisplay(timeLeft);
     }, updateDisplay);
 
-
   } else {
-    runTimer( () => {
+    safeRunTimer(() => {
       playChime();
       bigTom.classList.add('wiggle');
       setTimeout(() => bigTom.classList.remove('wiggle'), 800);
       handlePomodoroComplete();
       isBreak = true;
-      timeLeft = timeLeft5 // reset break time
+      timeLeft = timeLeft5;
       updateDisplay(timeLeft);
     }, updateDisplay);
   }
@@ -121,50 +133,54 @@ const stopTimer = () => {
     clearInterval(interval);
 
 }
-// reset stops time as above, but resets to 25m. 
-// 
-const resetTimer = () => {
-  {
-     console.log("resetTimer")
-    clearInterval(interval);
-  
-    if (isBreak) {
-      timeLeft = timeLeft5;
-    }
-    else{
-      timeLeft = timeLeft25;
-    }
-    startTimer();
-   }
-  
-}
+// reset stops time by clearing interval,
+//  timeLeft is set to time depending on if theres a break or not
 
-function breakTimer () {
-console.log("breakTimer")
-    runTimer( () => {
-      playChime();
-      start.classList.add('pause');
-      isBreak = false;
-      timeLeft = timeLeft25; // Reset for next Pomodoro
-      updateDisplay(timeLeft);
-    }, updateDisplay) 
+const resetTimer = () => {
+  console.log("resetTimer");
+
+  if (interval) {
+    clearInterval(interval);
+  }
+
+  isRunning = false;
+
+  timeLeft = isBreak ? timeLeft5 : timeLeft25;
+  updateDisplay(timeLeft);
+
+  startTimer(); // safeRunTimer will be used inside
+};
+
+
+function breakTimerButton () {
+  console.log("breakTimer");
+
+  if (interval) {
+    clearInterval(interval);
+  }
+
+  isBreak = true;
+  isRunning = false;
+  timeLeft = timeLeft5;
+
+  safeRunTimer(() => {
+    playChime();
+    bigTom.classList.add('wiggle');
+    setTimeout(() => bigTom.classList.remove('wiggle'), 800);
+    start.classList.add('pause');
+    isBreak = false;
+    timeLeft = timeLeft25;
+    updateDisplay(timeLeft);
+  }, updateDisplay);
 }
 
 
 function resetSegment() {
   completedPomodoros = 0;
   updateTomatoSegment();
-
-
-
-
-// at 4 poms, commence long-break screen. its a bool.
-//bg colour to blue + white, coffee image, orange border colour. 
- 
-  //if (completedPomodoros === 4,) {
- // }
-
 }
+
+
 
 // this takes 2 arguments, the event and what function that procs when the event happens
 start.addEventListener("click", checkRunning);
@@ -179,7 +195,7 @@ startButton.addEventListener('click', () => {
 });
 
 resetBtn.addEventListener("click", resetTimer);
-breakBtn.addEventListener("click", breakTimer);
+breakBtn.addEventListener("click", breakTimerButton);
 infoBtn.addEventListener("click", openNav)
 /* Open when someone clicks on the span element */
 function openNav() {
